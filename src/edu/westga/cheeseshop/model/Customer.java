@@ -8,9 +8,10 @@ package edu.westga.cheeseshop.model;
  */
 public class Customer extends Thread {
 
-	private int priority;
+	private Priority priority;
 	private Clerk clerk;
 	private boolean clerkIsReady;
+	private TicketingSystem ticketingSystem;
 
 	/**
 	 * Sets up a customer object with clerk and priority
@@ -23,19 +24,20 @@ public class Customer extends Thread {
 	 * @param priority
 	 *            Priority 1 = meek, 2 =bold
 	 */
-	public Customer(Clerk clerk, int priority) {
+	public Customer(Clerk clerk, Priority priority, TicketingSystem ticketingSystem) {
 
 		if (clerk == null) {
 			throw new IllegalArgumentException("Clerk is null");
-		}
-
-		if (priority < 1 || priority > 2) {
+		} else if (priority == null) {
 			throw new IllegalArgumentException("Priority is out of range.");
+		} else if (ticketingSystem == null) {
+			throw new IllegalArgumentException("Ticketing System is null");
 		}
 
 		this.clerk = clerk;
 		this.priority = priority;
 		this.clerkIsReady = false;
+		this.ticketingSystem = ticketingSystem;
 	}
 
 	/**
@@ -43,7 +45,7 @@ public class Customer extends Thread {
 	 * 
 	 * @return the priority 1 if meek, 2 if bold
 	 */
-	public int getCustomerPriority() {
+	public Priority getCustomerPriority() {
 		return this.priority;
 	}
 
@@ -58,6 +60,8 @@ public class Customer extends Thread {
 	 * Run method for this thread.
 	 */
 	public void run() {
+
+		this.ticketingSystem.enterWaitingRoom();
 
 		this.clerk.addCustomer(this);
 
@@ -76,6 +80,8 @@ public class Customer extends Thread {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+
+		this.ticketingSystem.leaveShop();
 	}
 
 }

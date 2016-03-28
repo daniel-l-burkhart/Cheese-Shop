@@ -1,39 +1,31 @@
-
 package edu.westga.cheeseshop.controller;
 
-import edu.westga.cheeseshop.model.Clerk;
-import edu.westga.cheeseshop.model.Customer;
-
 /**
- * @author danielburkhart
+ * Class that contains main method.
+ * 
+ * @author Daniel Burkhart
  * @version Spring 2016
  */
 public class Application {
 
 	/**
+	 * The entry point of the program
+	 * 
 	 * @param args
+	 *            The args passed in.
 	 */
 	public static void main(String[] args) {
-		Clerk clerk = new Clerk();
-		
-		(new Thread(clerk)).start();
 
-		for (int i = 0; i < 10; i++) {
+		CheeseShopController controller = new CheeseShopController();
 
-			if (i % 2 == 0) {
-				(new Customer(clerk, 1)).start();
-			} else {
-				(new Customer(clerk, 2)).start();
-			}
+		System.out.println("Begin" + System.lineSeparator());
 
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+		controller.openShop();
+		controller.keepOpenForXSeconds(30);
+		controller.closeShop();
 
-		clerk.stop();
+		System.out.println("End");
+
 	}
 
 }

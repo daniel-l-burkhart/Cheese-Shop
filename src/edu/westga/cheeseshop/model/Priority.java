@@ -3,9 +3,14 @@ package edu.westga.cheeseshop.model;
 /**
  * Priority of customer
  * 
- * @author danielburkhart
+ * @author Daniel Burkhart
  * @version Spring 2016
  */
 public enum Priority {
-	MEEK, BOLD
+
+	/** The meek. **/
+	MEEK,
+
+	/** The bold. **/
+	BOLD
 }

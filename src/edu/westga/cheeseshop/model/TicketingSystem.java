@@ -1,84 +1,102 @@
 
 package edu.westga.cheeseshop.model;
 
-import java.util.ArrayList;
-
 /**
- * @author danielburkhart
+ * The Class TicketingSystem.
  *
+ * @author Daniel Burkhart
+ * @version Spring 2016
  */
 public class TicketingSystem implements Runnable {
 
-	private ArrayList<Integer> tickets;
-	private int numberOfTickets;
+	private static final int NUMBER_OF_TICKETS = 10;
 	private boolean keepWorking;
 	private int waiting;
 	private int currentCustomerTicket;
-	private int nextTicketToBePulled;
-
-	private TicketingSystem() {
-		this.tickets = new ArrayList<Integer>();
-		this.keepWorking = true;
-		this.waiting = 0;
-		this.currentCustomerTicket = 0;
-		this.nextTicketToBePulled = 0;
-	}
+	private int nextTicket;
+	private int ticketNumber;
+	private int numberOfTicketsInPlay;
 
 	/**
 	 * Ticketing system.
-	 * 
-	 * @param numberOfTickets
-	 *            Number of tickets to be used.
 	 */
-	public TicketingSystem(int numberOfTickets) {
+	public TicketingSystem() {
 
-		this();
-
-		if (numberOfTickets < 0) {
-			throw new IllegalArgumentException("Tickets cannot be negative");
-		}
-
-		this.numberOfTickets = numberOfTickets;
+		this.keepWorking = true;
+		this.waiting = 0;
+		this.currentCustomerTicket = 0;
+		this.nextTicket = 0;
+		this.numberOfTicketsInPlay = 0;
 
 	}
 
-	public int dispenseTicket() {
-
-		if (this.tickets.size() == 0) {
-			throw new IllegalStateException("No more tickets. Customers are angry");
-		}
-
-		int ticket = this.tickets.get(0);
-		this.tickets.remove(0);
-		return ticket;
-	}
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Runnable#run()
+	 */
 	@Override
 	public void run() {
 
 		while (this.keepWorking) {
 
-			if (this.tickets.size() == 0) {
-				this.stockTickets();
+			if (this.nextTicket >= NUMBER_OF_TICKETS) {
+				this.nextTicket = 0;
 			}
 
 		}
 
 	}
 
-	private void stockTickets() {
-		for (int i = 0; i < this.numberOfTickets; i++) {
-			this.tickets.add(i);
-		}
-	}
-
+	/**
+	 * Customer enters waiting room.
+	 */
 	public synchronized void enterWaitingRoom() {
+
+		int ticketNumber = nextTicket++;
+
 		this.waiting++;
-		
-		
+
+		while (this.currentCustomerTicket < ticketNumber) {
+			try {
+				this.wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		this.waiting--;
+		this.leaveShop();
 
 	}
 
+	/**
+	 * Gets the waiting customers.
+	 *
+	 * @return the waiting
+	 */
+	public int getWaiting() {
+
+		if (this.waiting < 0) {
+			throw new IllegalStateException("Negative waiting customers");
+		}
+
+		return this.waiting;
+	}
+
+	/**
+	 * Customer leaves shop.
+	 */
+	public synchronized void leaveShop() {
+		this.numberOfTicketsInPlay--;
+
+		this.currentCustomerTicket++;
+		this.notifyAll();
+	}
+
+	/**
+	 * Stops the thread.
+	 */
 	public void stop() {
 		this.keepWorking = false;
 	}

@@ -1,12 +1,11 @@
-/**
- * 
- */
 package edu.westga.cheeseshop.model;
 
 import java.util.Comparator;
 
 /**
- * @author danielburkhart
+ * Class to compare customers based on priority
+ * 
+ * @author Daniel Burkhart
  * @version Spring 2016
  */
 public class CustomerComparator implements Comparator<Customer> {
@@ -17,7 +16,8 @@ public class CustomerComparator implements Comparator<Customer> {
 	@Override
 	public int compare(Customer o1, Customer o2) {
 
-		return Integer.compare(o2.getCustomerPriority(), o1.getCustomerPriority());
+		return o2.getCustomerPriority().compareTo(o2.getCustomerPriority());
+
 	}
 
 }
