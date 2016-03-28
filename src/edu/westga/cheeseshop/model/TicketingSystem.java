@@ -7,44 +7,22 @@ package edu.westga.cheeseshop.model;
  * @author Daniel Burkhart
  * @version Spring 2016
  */
-public class TicketingSystem implements Runnable {
+public class TicketingSystem {
 
-	private static final int NUMBER_OF_TICKETS = 10;
-	private boolean keepWorking;
+	private static final int MAX_TICKET_NUMBER = 9;
+
 	private int waiting;
-	private int currentCustomerTicket;
+	private int currentTurn;
 	private int nextTicket;
-	private int ticketNumber;
-	private int numberOfTicketsInPlay;
 
 	/**
 	 * Ticketing system.
 	 */
 	public TicketingSystem() {
 
-		this.keepWorking = true;
 		this.waiting = 0;
-		this.currentCustomerTicket = 0;
+		this.currentTurn = 0;
 		this.nextTicket = 0;
-		this.numberOfTicketsInPlay = 0;
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Runnable#run()
-	 */
-	@Override
-	public void run() {
-
-		while (this.keepWorking) {
-
-			if (this.nextTicket >= NUMBER_OF_TICKETS) {
-				this.nextTicket = 0;
-			}
-
-		}
 
 	}
 
@@ -53,21 +31,44 @@ public class TicketingSystem implements Runnable {
 	 */
 	public synchronized void enterWaitingRoom() {
 
-		int ticketNumber = nextTicket++;
+		this.checkSystemToReset();
+
+		int ticketNumber = this.nextTicket++;
 
 		this.waiting++;
 
-		while (this.currentCustomerTicket < ticketNumber) {
-			try {
-				this.wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		while (this.currentTurn < ticketNumber) {
+			this.waitInLine();
 		}
 
 		this.waiting--;
+
 		this.leaveShop();
 
+	}
+
+	private void checkSystemToReset() {
+
+		if ((this.nextTicket + 1) == MAX_TICKET_NUMBER) {
+			this.nextTicket = 0;
+		}
+	}
+
+	private void waitInLine() {
+		try {
+			this.wait();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Customer leaves shop.
+	 */
+	public synchronized void leaveShop() {
+
+		this.currentTurn++;
+		this.notifyAll();
 	}
 
 	/**
@@ -82,23 +83,6 @@ public class TicketingSystem implements Runnable {
 		}
 
 		return this.waiting;
-	}
-
-	/**
-	 * Customer leaves shop.
-	 */
-	public synchronized void leaveShop() {
-		this.numberOfTicketsInPlay--;
-
-		this.currentCustomerTicket++;
-		this.notifyAll();
-	}
-
-	/**
-	 * Stops the thread.
-	 */
-	public void stop() {
-		this.keepWorking = false;
 	}
 
 }

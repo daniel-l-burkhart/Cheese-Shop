@@ -82,6 +82,7 @@ public class Customer extends Thread {
 		}
 
 		this.ticketingSystem.leaveShop();
+
 	}
 
 }

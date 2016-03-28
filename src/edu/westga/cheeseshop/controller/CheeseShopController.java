@@ -77,12 +77,10 @@ public class CheeseShopController {
 	 * Closes the cheese shop after all customers waiting have been served.
 	 */
 	public void closeShop() {
-		
+
 		this.clerk.stop();
-		
-		System.out.println(System.lineSeparator()
-				+ "Numbers of customers waiting: " 
-				+ this.ticketingSystem.getWaiting()
+
+		System.out.println(System.lineSeparator() + "Numbers of customers waiting: " + this.ticketingSystem.getWaiting()
 				+ System.lineSeparator());
 	}
 
