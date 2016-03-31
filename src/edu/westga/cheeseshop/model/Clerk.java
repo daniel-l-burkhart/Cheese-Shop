@@ -1,7 +1,7 @@
 package edu.westga.cheeseshop.model;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Clerk of the shop. Serves customers one at a time.
@@ -11,14 +11,14 @@ import java.util.Collections;
  */
 public class Clerk implements Runnable {
 
-	private ArrayList<Customer> customers;
+	private CopyOnWriteArrayList<Customer> customers;
 	private boolean keepWorking;
 
 	/**
 	 * Constructor of class that initializes
 	 */
 	public Clerk() {
-		this.customers = new ArrayList<Customer>();
+		this.customers = new CopyOnWriteArrayList<Customer>();
 		this.keepWorking = true;
 	}
 
@@ -45,7 +45,7 @@ public class Clerk implements Runnable {
 	private void sortCustomers() {
 
 		Collections.sort(this.customers, new CustomerComparator());
-
+		
 	}
 
 	/**

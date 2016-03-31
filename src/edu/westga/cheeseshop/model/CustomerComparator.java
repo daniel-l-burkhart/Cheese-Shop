@@ -11,13 +11,13 @@ import java.util.Comparator;
 public class CustomerComparator implements Comparator<Customer> {
 
 	/**
-	 * Compare method to sort customers in descending order.
+	 * Compare method to sort customers by priority to prove
+	 * ticketing system functionality.
 	 */
 	@Override
 	public int compare(Customer o1, Customer o2) {
-
-		return o2.getCustomerPriority().compareTo(o2.getCustomerPriority());
-
+		
+		return o2.getCustomerPriority().compareTo(o1.getCustomerPriority());
 	}
 
 }

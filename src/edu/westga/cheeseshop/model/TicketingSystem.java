@@ -2,18 +2,18 @@
 package edu.westga.cheeseshop.model;
 
 /**
- * The Class TicketingSystem.
+ * The TicketingSystem that will ensure fairness and eliminate thread starvation.
  *
  * @author Daniel Burkhart
  * @version Spring 2016
  */
 public class TicketingSystem {
 
-	private static final int MAX_TICKET_NUMBER = 9;
+	private static final int MAX_TICKET_NUMBER = 10;
 
 	private int waiting;
-	private int currentTurn;
-	private int nextTicket;
+	private long turn;
+	private long next;
 
 	/**
 	 * Ticketing system.
@@ -21,8 +21,8 @@ public class TicketingSystem {
 	public TicketingSystem() {
 
 		this.waiting = 0;
-		this.currentTurn = 0;
-		this.nextTicket = 0;
+		this.turn = 0;
+		this.next = 0;
 
 	}
 
@@ -33,33 +33,33 @@ public class TicketingSystem {
 
 		this.checkSystemToReset();
 
-		int ticketNumber = this.nextTicket++;
+		long myturn = this.next;
+		this.next++;
 
 		this.waiting++;
 
-		while (this.currentTurn < ticketNumber) {
+		while (myturn != this.turn) {
 			this.waitInLine();
 		}
 
 		this.waiting--;
-
-		this.leaveShop();
-
 	}
 
 	private void checkSystemToReset() {
 
-		if ((this.nextTicket + 1) == MAX_TICKET_NUMBER) {
-			this.nextTicket = 0;
+		if ((this.next) == MAX_TICKET_NUMBER) {
+			this.next = 0;
 		}
 	}
 
 	private void waitInLine() {
+
 		try {
 			this.wait();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class TicketingSystem {
 	 */
 	public synchronized void leaveShop() {
 
-		this.currentTurn++;
+		this.turn++;
 		this.notifyAll();
 	}
 

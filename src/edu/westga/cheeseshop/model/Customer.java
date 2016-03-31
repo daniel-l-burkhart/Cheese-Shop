@@ -73,7 +73,7 @@ public class Customer extends Thread {
 			}
 		}
 
-		System.out.println("Customer " + this.priority + " is being served");
+		System.out.println("Customer " + this.priority + " is being served ");
 
 		try {
 			Thread.sleep(2000);
